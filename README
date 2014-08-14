@@ -1,5 +1,6 @@
 Author: TroyCheng
 Email: frostmourn716@gmail.com
+Modify: un44444444
 
 1. Introuction:
 
@@ -10,16 +11,18 @@ Email: frostmourn716@gmail.com
 
     For example:
 
+    Http post URI:
+        # dict group name, here is 'forbid', it contains two dictionaries:
+        #  forbin & anti_forbid
+        http://127.0.0.1:9000/forbid
     Http post request body:
-        # g: dict group name, here is 'FORBID', it contains two dictionaries:
-        #    forbin & anti_forbid
-        # t: content need to be filtered, here is '法轮功(falungong) is forbidden in China'
-        g=FORBID&t=%E6%B3%95%E8%BD%AE%E5%A4%A7%E6%B3%95falun%20is%20forbidden%20in%20China
+        # content need to be filtered, here is '法轮功(falungong) is forbidden in China'
+        %E6%B3%95%E8%BD%AE%E5%A4%A7%E6%B3%95falun%20is%20forbidden%20in%20China
 
     Http reaponse body:
         # it means hit two words in forbid dict: 法轮 & falun, hit no words in
         # anti_forbid dict.
-        {"forbid": ["\u6cd5\u8f6e", "falun"], "anti_forbid": []}
+        {"forbid": ["\u6cd5\u8f6e", "falun"], "anti_forbid": [], "hit": 2}
 
     The dictionaries are located in confilter/data, 1 keyword per line. In
     this example, there are two dictionaries: forbid and anti_forbid, belongs to
@@ -48,9 +51,9 @@ Email: frostmourn716@gmail.com
         poolSize = 3000
 
         [dict_groups]
-        keys = FORBID
+        keys = forbid
 
-        [dict_group_FORBID]
+        [dict_group_forbid]
         forbid = "../data/forbid.dict"
         anti_forbid = "../data/anti_forbid.dict"
 
@@ -58,7 +61,7 @@ Email: frostmourn716@gmail.com
     poolSize, which is used in gevent.WSGIServer.
 
     In 'dict_groups' section, you can add your own dictionary group name,
-    using ',' as separator, like: keys=FORBID,YOUR_GROUP,THIRD_GROUP, And
+    using ',' as separator, like: keys=forbid,YOUR_GROUP,THIRD_GROUP, And
     then, provide the dictionary name and path in 'dict_group_GROUPNAME'
     section. the 'dict_group_' is a prefix and the GROUPNAME is the one you
     specified in keys of dic_groups section. For example:

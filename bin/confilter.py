@@ -123,7 +123,7 @@ def confilterApp(env, start_response):
     dictGroup = env['PATH_INFO'][1:]
     if not dictGroup:
         start_response('200 OK',[('Content-Type', 'text/plain')])
-        return ["support uri(%s)" % (','.join(confilters.keys()))]
+        return ["supported uri(%s)" % (','.join(confilters.keys()))]
     if not confilters.has_key(dictGroup):
         log.error("404 Not Found. uri(%s) not support" % (dictGroup))
         start_response('404 Not Found',[('Content-Type', 'text/plain')])
@@ -138,7 +138,7 @@ def confilterApp(env, start_response):
     # get content from post data
     text = request_body
     content_type = env.get('CONTENT_TYPE', 'text/plain')
-    log.info("content_type:%r, find('urlencoded')=%r" % (content_type,content_type.find('urlencoded')))
+    #log.info("content_type:%r, find('urlencoded')=%r" % (content_type,content_type.find('urlencoded')))
     if 'urlencoded' in content_type:
         text = unquote(text)
     #start_response('201 OK',[('Content-Type', 'text/plain')])
@@ -157,6 +157,7 @@ def confilterApp(env, start_response):
     start_response('200 OK', [('Content-Type','application/json'),\
             ('Content-Length', str(len(response_body)))])
     log.info("200 OK.[hitWords]: %s" % hitWords)
+    log.info("From text: %s" % text)
     return [response_body,]
 
 # start the server
