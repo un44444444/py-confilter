@@ -160,8 +160,8 @@ def confilterApp(env, start_response):
     log.info("From text: %s" % text)
     return [response_body,]
 
-# start the server
-def runConfilter():
+# start the server multi-process
+def runConfilterMultiproc(CHILD_COUNT=5):
     host = config.get('host')
     port = int(config.get('port'))
     poolSize = int(config.get('poolSize'))
@@ -170,8 +170,8 @@ def runConfilter():
     log.info("Start server on %s:%s with pool size %s" % (host, port, poolSize))
     listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
     listener.bind((host, port))
-    listener.listen(5)
-    for _ in range(5):
+    listener.listen(CHILD_COUNT)
+    for _ in range(CHILD_COUNT):
         pid = os.fork()
         if pid == 0:
             wsgi.WSGIServer(listener, confilterApp, spawn = p).serve_forever()
@@ -181,6 +181,19 @@ def runConfilter():
 
 #    wsgi.WSGIServer((host, port), confilterApp, spawn = p).serve_forever()
     wsgi.WSGIServer(listener, confilterApp, spawn = p).serve_forever()
+
+# start the server single instance
+def runConfilterSingle():
+    host = config.get('host')
+    port = int(config.get('port'))
+    poolSize = int(config.get('poolSize'))
+    p = pool.Pool(poolSize)
+    log.info("Start server on %s:%s with pool size %s" % (host, port, poolSize))
+    wsgi.WSGIServer((host, port), confilterApp, spawn = p).serve_forever()
+
+# start the server multi-process
+def runConfilter():
+    runConfilterMultiproc()
 
 if __name__ == "__main__":
     runConfilter()
